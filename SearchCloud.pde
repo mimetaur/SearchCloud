@@ -1,7 +1,7 @@
 import wordcram.*;
 
 void setup() {
-  size(400, 250);
+  size(1024, 768);
 }
 
 void draw() {
