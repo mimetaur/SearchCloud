@@ -1,7 +1,7 @@
 import wordcram.*;
 
 Table table;
-HashMap<String, WordCluster> wordClusters;
+HashMap<String, Word> wordsDict;
 
 void setup() {
   size(1000, 600);
@@ -9,7 +9,7 @@ void setup() {
   colorMode(HSB);
   noLoop();
   table = loadTable("assets/searches.csv", "header");
-  wordClusters = new HashMap<String, WordCluster>();
+  wordsDict = new HashMap<String, Word>();
 }
 
 void pullWordClustersFromCsv() {
@@ -18,21 +18,20 @@ void pullWordClustersFromCsv() {
     String theme = row.getString("cluster_theme");
     String keyword = row.getString("keyword");
 
-    WordCluster wordCluster = new WordCluster();
-    if (wordClusters.get(theme) == null) {
-      wordCluster.theme = theme;
-      wordCluster.numSearches = numSearches;
+    Word word;
+    if (wordsDict.get(theme) == null) {
+      word = new Word(theme, numSearches);
     } else {
-      wordCluster = wordClusters.get(theme);
-      wordCluster.numSearches += numSearches;
+      word = wordsDict.get(theme);
+      word.weight += numSearches;
     }
-    wordClusters.put(theme, wordCluster);
+    wordsDict.put(theme, word);
   }
 }
 
 void draw() {
   pullWordClustersFromCsv();
-  for (WordCluster wc : wordClusters.values()) {
+  for (Word wc : wordsDict.values()) {
     println(wc);
   }
 
