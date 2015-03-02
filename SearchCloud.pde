@@ -20,10 +20,11 @@ void draw() {
 
     Cluster cluster = new Cluster();
     if (words.get(theme) == null) {
-      cluster.numSearches = numSearches;
       cluster.theme = theme;
+      cluster.numSearches = numSearches;
     } else {
       cluster = words.get(theme);
+      cluster.numSearches += numSearches;
     }
     words.put(theme, cluster);
   }
