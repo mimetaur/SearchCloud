@@ -1,8 +1,8 @@
-class Cluster {
+class WordCluster {
   int numSearches;
   String theme;
 
-  Cluster() {
+  WordCluster() {
     numSearches = 0;
   }
 

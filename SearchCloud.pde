@@ -1,7 +1,7 @@
 import wordcram.*;
 
 Table table;
-HashMap<String, Cluster> words;
+HashMap<String, WordCluster> wordClusters;
 
 void setup() {
   size(1000, 600);
@@ -9,29 +9,33 @@ void setup() {
   colorMode(HSB);
   noLoop();
   table = loadTable("assets/searches.csv", "header");
-  words = new HashMap<String, Cluster>();
+  wordClusters = new HashMap<String, WordCluster>();
 }
 
-void draw() {
+void pullWordClustersFromCsv() {
   for (TableRow row : table.rows()) {
     int numSearches = row.getInt("num_searches");
     String theme = row.getString("cluster_theme");
     String keyword = row.getString("keyword");
 
-    Cluster cluster = new Cluster();
-    if (words.get(theme) == null) {
-      cluster.theme = theme;
-      cluster.numSearches = numSearches;
+    WordCluster wordCluster = new WordCluster();
+    if (wordClusters.get(theme) == null) {
+      wordCluster.theme = theme;
+      wordCluster.numSearches = numSearches;
     } else {
-      cluster = words.get(theme);
-      cluster.numSearches += numSearches;
+      wordCluster = wordClusters.get(theme);
+      wordCluster.numSearches += numSearches;
     }
-    words.put(theme, cluster);
+    wordClusters.put(theme, wordCluster);
+  }
+}
+
+void draw() {
+  pullWordClustersFromCsv();
+  for (WordCluster wc : wordClusters.values()) {
+    println(wc);
   }
 
-  for (Cluster c : words.values()) {
-    println(c);
-  }
   // pulled this from the wordcram docs as example
   new WordCram(this)
     .fromWebPage("http://en.wikipedia.org/wiki/Special:Random")
