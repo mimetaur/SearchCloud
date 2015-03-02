@@ -1,18 +1,16 @@
 import wordcram.*;
 
-Table table;
-HashMap<String, Word> wordsDict;
-
 void setup() {
   size(1000, 600);
   background(230);
   colorMode(HSB);
   noLoop();
-  table = loadTable("assets/searches.csv", "header");
-  wordsDict = new HashMap<String, Word>();
 }
 
-void pullWordClustersFromCsv() {
+Word[] wordsFromCsv() {
+  HashMap<String, Word> wordsDict = new HashMap<String, Word>();
+  Table table = loadTable("assets/searches.csv", "header");
+
   for (TableRow row : table.rows()) {
     int numSearches = row.getInt("num_searches");
     String theme = row.getString("cluster_theme");
@@ -27,17 +25,22 @@ void pullWordClustersFromCsv() {
     }
     wordsDict.put(theme, word);
   }
+
+  Word[] words = new Word[wordsDict.size()];
+  int i = 0;
+  for (Word w : wordsDict.values()) {
+    words[i] = w;
+    i++;
+  }
+  println(words);
+  return words;
 }
 
 void draw() {
-  pullWordClustersFromCsv();
-  for (Word wc : wordsDict.values()) {
-    println(wc);
-  }
+  Word[] words = wordsFromCsv();
 
-  // pulled this from the wordcram docs as example
   new WordCram(this)
-    .fromWebPage("http://en.wikipedia.org/wiki/Special:Random")
+    .fromWords(words)
     .withColors(color(30), color(110),
                 color(random(255), 240, 200))
     .sizedByWeight(5, 120)
