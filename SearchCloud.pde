@@ -1,15 +1,39 @@
 import wordcram.*;
 
+boolean fileChosen = false;
+String selectedFile;
+String selectedBaseFileName;
+
 void setup() {
   size(1000, 600);
   background(230);
   colorMode(HSB);
   noLoop();
+  selectInput("Select a file to process:", "onFileSelected");
+}
+
+void onFileSelected(File selection) {
+  if (selection == null) {
+    println("Window was closed or the user hit cancel.");
+  } else {
+    selectedFile = selection.getAbsolutePath();
+    String fileName = selection.getName();
+    selectedBaseFileName = fileName.substring(0, fileName.lastIndexOf('.'));
+
+    Word[] words = wordsFromCsv();
+
+    new WordCram(this)
+      .fromWords(words)
+      .withColors(color(30), color(110),
+                    color(random(255), 240, 200))
+      .sizedByWeight(10, 100)
+      .drawAll();
+  }
 }
 
 Word[] wordsFromCsv() {
   HashMap<String, Word> wordsDict = new HashMap<String, Word>();
-  Table table = loadTable("assets/searches.csv", "header");
+  Table table = loadTable(selectedFile, "header");
 
   for (TableRow row : table.rows()) {
     int numSearches = row.getInt("num_searches");
@@ -37,17 +61,10 @@ Word[] wordsFromCsv() {
 }
 
 void draw() {
-  Word[] words = wordsFromCsv();
 
-  new WordCram(this)
-    .fromWords(words)
-    .withColors(color(30), color(110),
-                color(random(255), 240, 200))
-    .sizedByWeight(5, 120)
-    .drawAll();
 }
 
 void endDraw() {
-  save(new File(sketchPath("")).getName() + ".png");
+  save(selectedBaseFileName + ".png");
   exit();
 }
